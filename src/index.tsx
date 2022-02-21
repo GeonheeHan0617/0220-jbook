@@ -1,17 +1,46 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+// 생성 순서
 
+// 5  esbuild
+import * as esbuild from 'esbuild-wasm';
+// 4
+import { useState, useEffect } from 'react';
+
+// 1
+import ReactDOM from "react-dom";
+
+// 2 
+const App = () => {
+    const [input, setInput] = useState('');
+    const [code, setCode] = useState('');
+
+    const startService = async () => {
+        const service = await esbuild.startService({
+            worker: true,
+            wasmURL: '/esbuild.wasm'
+        });
+        console.log(service);
+    }
+
+    const onClick = () => {
+        console.log(input)
+    };
+    useEffect(() => {
+        startService();
+
+    }, []);
+
+
+    return <div>
+        <textarea value={input} onChange={e => setInput(e.target.value)}></textarea>
+        <div>
+            <button onClick={onClick}>submit</button>
+        </div>
+        <pre>{code}</pre>
+    </div>;
+};
+
+// 3 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <App />,
+    document.querySelector('#root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

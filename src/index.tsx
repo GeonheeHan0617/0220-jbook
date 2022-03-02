@@ -29,6 +29,7 @@ import ReactDOM from "react-dom";
 // 6 플러그인 생성한 후
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 
+
 // 2 
 const App = () => {
     const ref = useRef<any>();
@@ -82,11 +83,11 @@ const App = () => {
             entryPoints: ['index.js'],
             bundle: true,
             write: false,
-            plugins: [unpkgPathPlugin()],
+            plugins: [unpkgPathPlugin(input)],
             // 79. Defines During Bundling
             // define section  url: https://esbuild.github.io/api/#define
             define: {
-                // 'process.env.NODE_ENV': '"production"',
+                'process.env.NODE_ENV': '"production"',
                 global: 'window',
             }
 

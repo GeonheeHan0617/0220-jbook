@@ -24,17 +24,32 @@ export const unpkgPathPlugin = (inputCode: string) => {
         name: 'unpkg-path-plugin',
         setup(build: esbuild.PluginBuild) {
             // 86. Breaking Up Resolve Logic With Filters
-            build.onResolve({ filter: /(^index\.js)$/ }, () => {
+            // Handle root entry file of 'index.js'
+            build.onResolve({ filter: /(^index\.js$)/ }, () => {
                 return { path: 'index.js', namespace: 'a' };
 
-            })
+            });
 
+            // 86. Breaking Up Resolve Logic With Filters
+            // Handle relative paths in a module
+            build.onResolve({ filter: /^\.+\// }, (args: any) => {
+                return {
+                    namespace: 'a',
+                    path: new URL(
+                        args.path, 'https://unpkg.com/' + args.resolveDir + '/'
+                    ).href,
+                };
+            });
+
+
+            // 86. Breaking Up Resolve Logic With Filters -> 87 차례 22-03-14
+            // Handel main file of a module
             build.onResolve({ filter: /.*/ }, async (args: any) => {
-                console.log('onResolve', args);
+                // console.log('onResolve', args);
 
-                if (args.path === 'index.js') {
-                    return { path: args.path, namespace: 'a' };
-                }
+                // if (args.path === 'index.js') {
+                //     return { path: args.path, namespace: 'a' };
+                // }
                 // else if (args.path === 'tiny-test-pkg') {
                 //     return {
                 //         path: 'https://unpkg.com/tiny-test-pkg@1.0.0/index.js'
@@ -42,20 +57,26 @@ export const unpkgPathPlugin = (inputCode: string) => {
                 //     };
                 // }
 
-                if (args.path.includes('./') || args.path.includes('../')) {
-                    return {
-                        namespace: 'a',
-                        /* path: new URL(args.path, args.importer + '/').href */
-                        path: new URL(
-                            args.path, 'https://unpkg.com/' + args.resolveDir + '/'
-                        ).href,
-                    };
-                }
+                // 86. Breaking Up Resolve Logic With Filters
+                /*      if (args.path.includes('./') || args.path.includes('../')) {
+                              return {
+                                   namespace: 'a',
+           
+                                   path: new URL(
+                                       args.path, 'https://unpkg.com/' + args.resolveDir + '/'
+                                   ).href,
+                               }; 
+                     } */
+
+                // 86. console.log
                 return {
                     namespace: 'a',
                     path: `https://unpkg.com/${args.path}`,
                 }
             });
+            // const message = require('nested-test-pkg');
+
+            // console.log(message);
 
             //84. Fixing a TypeScript Error
             build.onLoad({ filter: /.*/, /* namespace: 'b'  */ }, async (args: any) => {

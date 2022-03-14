@@ -83,7 +83,7 @@ const App = () => {
             entryPoints: ['index.js'],
             bundle: true,
             write: false,
-            plugins: [unpkgPathPlugin(input)],
+            plugins: [unpkgPathPlugin(input )],
             // 79. Defines During Bundling
             // define section  url: https://esbuild.github.io/api/#define
             define: {

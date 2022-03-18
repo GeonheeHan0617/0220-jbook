@@ -28,6 +28,9 @@ import { useState, useEffect, useRef } from 'react';
 import ReactDOM from "react-dom";
 // 6 플러그인 생성한 후
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
+// 87 강의에서 fetch-plugins.ts 생성후 import
+import { fetchPlugin } from './plugins/fetch-plugin';
+
 
 
 // 2 
@@ -83,7 +86,10 @@ const App = () => {
             entryPoints: ['index.js'],
             bundle: true,
             write: false,
-            plugins: [unpkgPathPlugin(input )],
+            plugins: [
+                // 87 강의에서 input 지움
+                unpkgPathPlugin(),
+                fetchPlugin(input)],
             // 79. Defines During Bundling
             // define section  url: https://esbuild.github.io/api/#define
             define: {
